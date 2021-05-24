@@ -1,0 +1,6 @@
+# System Files
+.DS_Store
+Thumbs.db
+
+# Config Files
+.atom-live-server.json
