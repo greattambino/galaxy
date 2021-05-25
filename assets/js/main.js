@@ -104,11 +104,87 @@
     };
 
     /**
-     * Sets the scene's background color.
+     * Adds a gradient background to the scene.
      */
     IconGalaxy.prototype.createBackground = function() {
-      this.scene.background = new THREE.Color(0x002256);
+      // Create the background plane.
+      var plane = new THREE.PlaneBufferGeometry(50000, 50000, 1, 1);
+
+      /**
+       * Uniforms are variables that have the same value for all vertices.
+       *    It can be accessed by both the vertex shader and the fragment shader.
+       *    These colors apply a dark bluish gradient.
+       */
+      var uniforms = {
+        topColor: {value: new THREE.Color(0x002256)},
+        bottomColor: {value: new THREE.Color(0x000000)}
+      };
+
+      /**
+       * Vertex shader GLSL code.
+       * @type {string}
+       */
+      var vShader = vertexShader();
+
+      /**
+       * Fragment shader GLSL code.
+       * @type {string}
+       */
+      var fShader = fragmentShader();
+
+      // Create material rendered with custom shaders.
+      var material = new THREE.ShaderMaterial({
+        uniforms: uniforms,
+        vertexShader: vShader,
+        fragmentShader: fShader
+      });
+
+      // Create the background mesh.
+      var background = new THREE.Mesh(plane, material);
+
+      // Set the background positioning.
+      background.position.z = -10000;
+
+      this.scene.add(background);
     };
+
+    /**
+     * Setup a vertex shader.
+     * The vertex shader runs first; it receives attributes,
+     *     calculates/manipulates the position of each individual vertex, and
+     *     passes additional data (varyings) to the fragment shader.
+     * @function IconGalaxy.vertexShader
+     */
+    function vertexShader() {
+      return `
+        varying vec2 vUv;
+
+        void main() {
+          vUv = uv;
+
+          vec4 modelViewPosition = modelViewMatrix * vec4(position, 1.0);
+          gl_Position = projectionMatrix * modelViewPosition;
+        }
+      `;
+    }
+
+    /**
+     * Setup a fragment shader.
+     * The fragment (or pixel) shader runs second; it sets the color of each
+     *     individual "fragment" (pixel) rendered to the screen.
+     * @function IconGalaxy.fragmentShader
+     */
+    function fragmentShader() {
+      return `
+        uniform vec3 topColor;
+        uniform vec3 bottomColor;
+        varying vec2 vUv;
+
+        void main() {
+          gl_FragColor = vec4(mix(bottomColor, topColor, vUv.y), 1.0);
+        }
+      `;
+    }
 
     return IconGalaxy;
   })();
