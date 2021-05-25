@@ -60,6 +60,12 @@
        */
       this.MATRIX_LENGTH = 8;
 
+      /**
+       * Array of icon particles.
+       * @type {THREE.Mesh[]}
+       */
+      this.particles = [];
+
       // ------------------------------
       // Setup
       // ------------------------------
@@ -271,11 +277,8 @@
        */
       var pixelData = this.getWordPixelData();
 
-      /**
-       * An array of icon particles for our word.
-       * @type {THREE.Mesh[]}
-       */
-      var particles = this.createIconParticles();
+      // Create the particles for our word
+      this.createIconParticles(pixelData);
 
       // ------------------------------
       // Word Formation
@@ -288,15 +291,12 @@
           if (pixelData[(this.CANVAS_W * j + i) * 4 + 3] == 0)
             continue;
 
-          var icon = particles[particleIdx];
+          var icon = this.particles[particleIdx];
 
           // Icon position.
           icon.position.x = (i - this.CANVAS_W / 2) * 30;
           icon.position.y = (this.CANVAS_H / 2 - j) * 30;
           icon.position.z = 0;
-
-          // Add icon to the scene.
-          this.scene.add(icon);
 
           particleIdx++;
         }
@@ -330,9 +330,10 @@
 
     /**
      * Generates the icon particles within the word.
-     * @return {THREE.Mesh[]} Array of icon particles.
+     * @param {Uint8ClampedArray} pixelData Canvas image data representing the
+     *     rgba data of our word in a one-dimensional array.
      */
-    IconGalaxy.prototype.createIconParticles = function() {
+    IconGalaxy.prototype.createIconParticles = function(pixelData) {
       /**
        * A texture atlas of icons.
        * @type {THREE.Texture}
@@ -340,13 +341,13 @@
       var texture = this.createIconTextureAtlas();
 
       /**
-       * Array of icon particles.
-       * @type {THREE.Mesh[]}
+       * Number of particles needed based on pixel data.
+       * @type {number}
        */
-      var particles = [];
+      var totalParticlesNeeded = this.getParticleCount(pixelData);
 
       var unitRatio = 1 / this.MATRIX_LENGTH;
-      for (var i = 0; i < this.CANVAS_W * this.CANVAS_H / 2; i++) {
+      for (var i = 0; i < totalParticlesNeeded; i++) {
         // Random number within the matrix range for X offset.
         var offsetx = (this.MATRIX_LENGTH * Math.random()) >> 0;
         // Random number within the matrix range for Y offset.
@@ -360,13 +361,12 @@
           side: THREE.DoubleSide
         });
         var mesh = new THREE.Mesh(geometry, material);
-        particles.push(mesh);
+        this.scene.add(mesh);
+        this.particles.push(mesh);
 
         // Changes the UVs to isolate a random icon from the texture atlas.
         this.randomizeUVs(mesh.geometry, unitRatio, offsetx, offsety);
       }
-
-      return particles;
     };
 
     /**
@@ -470,6 +470,31 @@
       // Create & return the texture.
       var textureAtlas = new THREE.TextureLoader().load(cacheUrl);
       return textureAtlas;
+    };
+
+    /**
+     * Returns the number of particles needed based on the amount of
+     *     opaque pixels in the given pixelData.
+     * @param {Uint8ClampedArray} pixelData Canvas image data representing the
+     *     rgba data of our word in a one-dimensional array.
+     * @return {number} Number of particles needed.
+     */
+    IconGalaxy.prototype.getParticleCount = function(pixelData) {
+      var canvasArea = this.CANVAS_W * this.CANVAS_H;
+      var textArea = canvasArea / 2;
+
+      // After this index in pixelData, the rest represents irrelevant pixels
+      var maxPixelIndex = textArea * 4;
+      var totalParticlesNeeded = 0;
+
+      // Since pixelData includes RGBA data and all we care about is A,
+      // we start at the 3rd index and iterate by 4.
+      for (var idx = 3; idx < maxPixelIndex; idx += 4) {
+        if (pixelData[idx] > 0)
+          totalParticlesNeeded++;
+      }
+
+      return totalParticlesNeeded;
     };
 
     /**
