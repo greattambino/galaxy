@@ -21,9 +21,10 @@
       this.addEventListeners();
 
       // ------------------------------
-      // Scene
+      // Scene Additions
       // ------------------------------
       this.createBackground();
+      this.createSpaceParticles();
 
       // ------------------------------
       // Render
@@ -146,6 +147,55 @@
       background.position.z = -10000;
 
       this.scene.add(background);
+    };
+
+    /**
+     * Generates floating space particles.
+     */
+    IconGalaxy.prototype.createSpaceParticles = function() {
+      var PARTICLE_IMAGE = 'assets/images/space_particle.png';
+
+      /**
+       * Number of particles on the plane.
+       * @type {number}
+       */
+      var NUM_PARTICLES = 20000;
+
+      /**
+       * Spread for the particles' coordinates on the plane.
+       *     i.e. 10000 would apply a range of -5000 to 5000.
+       * @type {number}
+       */
+      var SPREAD = 10000;
+
+      // Create the geometry & set the positioning
+      var geometry = new THREE.BufferGeometry();
+      var vertices = [];
+      for (var i = 0; i < NUM_PARTICLES; i++) {
+        vertices.push(
+          THREE.Math.randFloatSpread(SPREAD),
+          THREE.Math.randFloatSpread(SPREAD),
+          THREE.Math.randFloatSpread(SPREAD)
+        );
+      }
+      geometry.addAttribute(
+        'position',
+        new THREE.Float32BufferAttribute(vertices, 3)
+      );
+
+      // Create material.
+      var material = new THREE.PointsMaterial({
+        size: 30,
+        color: 0x444444,
+        blending: THREE.AdditiveBlending,
+        depthTest: false,
+        transparent: true,
+        map: new THREE.TextureLoader().load(PARTICLE_IMAGE)
+      });
+
+      // Create the points & add them to the scene.
+      var points = new THREE.Points(geometry, material);
+      this.scene.add(points);
     };
 
     /**
