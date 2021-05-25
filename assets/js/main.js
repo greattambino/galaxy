@@ -42,6 +42,7 @@
       // Scene Additions
       // ------------------------------
       this.createBackground();
+      this.addLight();
       this.createSpaceParticles();
       this.createWord();
 
@@ -166,6 +167,15 @@
       background.position.z = -10000;
 
       this.scene.add(background);
+    };
+
+    /**
+     * Adds DirectionalLight to the scene.
+     */
+    IconGalaxy.prototype.addLight = function() {
+      var light = new THREE.DirectionalLight(0xffffff);
+      light.position.set(0, 1, +1).normalize();
+      this.scene.add(light);
     };
 
     /**
