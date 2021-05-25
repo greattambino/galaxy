@@ -241,7 +241,7 @@
        * Number of particles on the plane.
        * @type {number}
        */
-      var NUM_PARTICLES = 20000;
+      var NUM_PARTICLES = 50000;
 
       /**
        * Spread for the particles' coordinates on the plane.
