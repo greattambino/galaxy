@@ -1,4 +1,4 @@
-/* global THREE, createjs, WebFont, TimelineMax */
+/* global THREE, createjs, WebFont, TimelineMax, Expo */
 
 'use strict';
 
@@ -326,10 +326,34 @@
           );
           icon.material.blending = THREE.AdditiveBlending;
 
-          // Icon position.
-          icon.position.x = (i - this.CANVAS_W / 2) * 30;
-          icon.position.y = (this.CANVAS_H / 2 - j) * 30;
-          icon.position.z = 0;
+          // Icon positions (start & end).
+          var iconStartPosition = {
+            x: 2000 * (Math.random() - 0.5) - 500,
+            y: 1000 * (Math.random() - 0.5),
+            z: 10000
+          };
+          var iconEndPosition = {
+            x: (i - this.CANVAS_W / 2) * 30,
+            y: (this.CANVAS_H / 2 - j) * 30,
+            z: 0
+          };
+          icon.position.x = iconStartPosition.x;
+          icon.position.y = iconStartPosition.y;
+          icon.position.z = iconStartPosition.z;
+
+          // Icon timeline.
+          this.timeline.to(icon.position, 4.0, {
+            bezier: [
+              iconStartPosition, {
+                x: (0 + iconEndPosition.x) / 2 + 300,
+                y: (iconStartPosition.y + iconEndPosition.y) /
+                    2 + 500 * Math.random(),
+                z: (iconStartPosition.z + iconEndPosition.z) / 2
+              },
+              iconEndPosition
+            ],
+            ease: Expo.easeInOut
+          }, 0);
 
           particleIdx++;
         }
