@@ -1,4 +1,4 @@
-/* global THREE, createjs, WebFont, TimelineMax, Expo */
+/* global THREE, createjs, WebFont, TimelineMax, Expo, Cubic */
 
 'use strict';
 
@@ -341,8 +341,15 @@
           icon.position.y = iconStartPosition.y;
           icon.position.z = iconStartPosition.z;
 
+          // Icon rotation.
+          icon.rotation.z = 10 * Math.PI * (Math.random() - 0.5);
+
           // Icon timeline.
-          this.timeline.to(icon.position, 4.0, {
+          this.timeline.to(icon.rotation, 6.0, {
+            z: 0,
+            ease: Cubic.easeInOut
+          }, 0);
+          this.timeline.to(icon.position, 7.0, {
             bezier: [
               iconStartPosition, {
                 x: (0 + iconEndPosition.x) / 2 + 300,
