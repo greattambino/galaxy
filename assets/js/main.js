@@ -18,7 +18,20 @@
       // ------------------------------
       this.setupScene();
       this.setupCamera();
+
+      // ------------------------------
+      // Render
+      // ------------------------------
+      this.render();
     }
+
+    /**
+     * Renders the scene.
+     */
+    IconGalaxy.prototype.render = function() {
+      requestAnimationFrame(this.render.bind(this));
+      this.renderer.render(this.scene, this.camera);
+    };
 
     /**
      * Initial setup that creates the scene and renderer.
