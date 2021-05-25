@@ -1,4 +1,4 @@
-/* global THREE */
+/* global THREE, createjs */
 
 'use strict';
 
@@ -13,6 +13,24 @@
      * @constructor
      */
     function IconGalaxy() {
+      /**
+       * The word to display.
+       * @const {string}
+       */
+      this.WORD = 'marc@tambara.me';
+
+      /**
+       * Canvas width.
+       * @const {number}
+       */
+      this.CANVAS_W = 160;
+
+      /**
+       * Canvas height.
+       * @const {number}
+       */
+      this.CANVAS_H = 40;
+
       // ------------------------------
       // Setup
       // ------------------------------
@@ -25,6 +43,7 @@
       // ------------------------------
       this.createBackground();
       this.createSpaceParticles();
+      this.createWord();
 
       // ------------------------------
       // Render
@@ -196,6 +215,53 @@
       // Create the points & add them to the scene.
       var points = new THREE.Points(geometry, material);
       this.scene.add(points);
+    };
+
+    /**
+     * Generates our word from icon particles.
+     */
+    IconGalaxy.prototype.createWord = function() {
+      /**
+       * The pixel data for our word represented in a one-dimensional array
+       *     containing the data in the RGBA order, with integer values between
+       *     0 and 255 (inclusive).
+       * @type {Uint8ClampedArray.<number>}
+       */
+      // var pixelData = this.getWordPixelData();
+
+      /**
+       * @todo Create the icon particles for the word.
+       */
+
+      /**
+       * @todo Form the word by setting the positions of the icon particles
+       *     and adding them to the scene.
+       */
+    };
+
+    /**
+     * Uses a Canvas to stage the text of our word and returns the image data.
+     * @return {Uint8ClampedArray} Canvas image data representing the rgba data.
+     *     of our word in a one-dimensional array.
+     */
+    IconGalaxy.prototype.getWordPixelData = function() {
+      // Create a canvas for staging our word.
+      var canvas = document.createElement('canvas');
+      canvas.setAttribute('width', this.CANVAS_W + 'px');
+      canvas.setAttribute('height', this.CANVAS_H + 'px');
+
+      // Create & stage our text.
+      var FONT_NAME = 'ui-monospace';
+      var stage = new createjs.Stage(canvas);
+      var text = new createjs.Text(this.WORD, '20px ' + FONT_NAME, '#FFF');
+      text.textAlign = 'center';
+      text.x = this.CANVAS_W / 2;
+      stage.addChild(text);
+      stage.update();
+
+      // Return the image rgba data.
+      var ctx = canvas.getContext('2d');
+      return ctx.getImageData(0, 0, this.CANVAS_W, this.CANVAS_H).data;
     };
 
     /**
