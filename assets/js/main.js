@@ -1,4 +1,4 @@
-/* global THREE, createjs, WebFont, TimelineMax, Expo, Cubic */
+/* global THREE, createjs, WebFont, TimelineMax, Expo, Cubic, Quart */
 
 'use strict';
 
@@ -84,6 +84,7 @@
       // ------------------------------
       this.createBackground();
       this.addLight();
+      this.createWrap();
       this.createSpaceParticles();
 
       // ------------------------------
@@ -91,6 +92,7 @@
       // ------------------------------
       this.createTimeline();
       this.createWordAnimation();
+      this.setupWrapTimeline();
       this.setupCameraTimeline();
 
       // ------------------------------
@@ -238,6 +240,14 @@
       var light = new THREE.DirectionalLight(0xffffff);
       light.position.set(0, 1, +1).normalize();
       this.scene.add(light);
+    };
+
+    /**
+     * Generates the wrap object for the staging area of the icon particles.
+     */
+    IconGalaxy.prototype.createWrap = function() {
+      this.wrap = new THREE.Object3D();
+      this.scene.add(this.wrap);
     };
 
     /**
@@ -441,7 +451,7 @@
           side: THREE.DoubleSide
         });
         var mesh = new THREE.Mesh(geometry, material);
-        this.scene.add(mesh);
+        this.wrap.add(mesh);
         this.particles.push(mesh);
 
         // Changes the UVs to isolate a random icon from the texture atlas.
@@ -615,6 +625,20 @@
     };
 
     /**
+     * Applies the timeline for the wrap positioning.
+     */
+    IconGalaxy.prototype.setupWrapTimeline = function() {
+      // Wrap position start.
+      this.wrap.position.z = -1000;
+
+      // Wrap position end.
+      this.timeline.to(this.wrap.position, 3.0, {
+        z: -5500,
+        ease: Quart.easeIn
+      }, 0);
+    };
+
+    /**
      * Applies the timeline for the camera positioning.
      */
     IconGalaxy.prototype.setupCameraTimeline = function() {
@@ -622,14 +646,14 @@
       this.timeline.set(this.camera.position, {
         x: 3000,
         y: 2000,
-        z: 10000
+        z: 11000
       }, 0);
 
       // Camera position end.
       this.timeline.to(this.camera.position, 8.0, {
         x: 0,
         y: 0,
-        z: 5000,
+        z: 1000,
         ease: Cubic.easeOut
       }, 0);
     };
