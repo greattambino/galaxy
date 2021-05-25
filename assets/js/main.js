@@ -374,15 +374,85 @@
      * @return {THREE.Texture} A texture atlas of icons.
      */
     IconGalaxy.prototype.createIconTextureAtlas = function() {
+      /**
+       * Array of FontAwesome Unicode strings for icon particles.
+       * @type {String[]}
+       */
+      var ICONS = [
+        '\uf270', // amazon
+        '\uf179', // apple
+        '\uf209', // angellist
+        '\uf1b4', // behance
+        '\uf171', // bitbucket
+        '\uf15a', // bitcoin
+        '\uf1cb', // codepen
+        '\uf1bd', // deviantart
+        '\uf1a6', // digg
+        '\uf16b', // dropbox
+        '\uf2d7', // etsy
+        '\uf09a', // facebook
+        '\uf16e', // flickr
+        '\uf180', // foursquare
+        '\uf265', // get-pocket
+        '\uf09b', // github
+        '\uf296', // gitlab
+        '\uf1a0', // google
+        '\uf1d4', // hacker-news
+        '\uf27c', // houzz
+        '\uf13b', // html5
+        '\uf2d8', // imdb
+        '\uf16d', // instagram
+        '\uf1aa', // joomla
+        '\uf1cc', // jsfiddle
+        '\uf08c', // linkedin
+        '\uf23a', // medium
+        '\uf2e0', // meetup
+        '\uf289', // mixcloud
+        '\uf23d', // opencart
+        '\uf1ed', // paypal
+        '\uf0d2', // pinterest
+        '\uf288', // producthunt
+        '\uf2c4', // quora
+        '\uf1a1', // reddit
+        '\uf28a', // scribd
+        '\uf2da', // sellcast
+        '\uf17e', // skype
+        '\uf198', // slack
+        '\uf1e7', // slideshare
+        '\uf2ab', // snapchat
+        '\uf1be', // soundcloud
+        '\uf1bc', // spotify
+        '\uf18d', // stack-exchange
+        '\uf16c', // stackoverflow
+        '\uf1b6', // steam
+        '\uf1a4', // stumbleupon
+        '\uf2c6', // telegram
+        '\uf1d5', // tencent
+        '\uf181', // trello
+        '\uf262', // tripadvisor
+        '\uf173', // tumblr
+        '\uf1e8', // twitch
+        '\uf099', // twitter
+        '\uf27d', // vimeo
+        '\uf1ca', // vine
+        '\uf1d7', // weixin/wechat
+        '\uf232', // whatsapp
+        '\uf266', // wikipedia
+        '\uf17a', // windows
+        '\uf19a', // wordpress
+        '\uf19e', // yahoo
+        '\uf1e9', // yelp
+        '\uf167' // youtube
+      ];
       var SIZE = 256;
-      var MATRIX_AREA = this.MATRIX_LENGTH * this.MATRIX_LENGTH;
 
       // Create a container for our texture atlas.
       var container = new createjs.Container();
 
       // Add each icon to the container at the specified coordinates.
-      for (var i = 0; i < MATRIX_AREA; i++) {
-        var text = new createjs.Text('\uf270', '200px FontAwesome', '#FFF');
+      for (var i = 0, len = ICONS.length; i < len; i++) {
+        var char = ICONS[i];
+        var text = new createjs.Text(char, '200px FontAwesome', '#FFF');
         text.textBaseline = 'middle';
         text.textAlign = 'center';
         text.x = SIZE * (i % this.MATRIX_LENGTH) + SIZE / 2;
