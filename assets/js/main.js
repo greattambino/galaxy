@@ -240,8 +240,10 @@
       // var pixelData = this.getWordPixelData();
 
       /**
-       * @todo Create the icon particles for the word.
+       * An array of icon particles for our word.
+       * @type {THREE.Mesh[]}
        */
+      // var particles = this.createIconParticles();
 
       /**
        * @todo Form the word by setting the positions of the icon particles
@@ -272,6 +274,38 @@
       // Return the image rgba data.
       var ctx = canvas.getContext('2d');
       return ctx.getImageData(0, 0, this.CANVAS_W, this.CANVAS_H).data;
+    };
+
+    /**
+     * Generates the icon particles within the word.
+     * @return {THREE.Mesh[]} Array of icon particles.
+     */
+    IconGalaxy.prototype.createIconParticles = function() {
+      /**
+       * @todo Swap this out for the icon particle texture.
+       */
+      var PARTICLE_IMAGE = 'assets/images/space_particle.png';
+
+      /**
+       * Array of icon particles.
+       * @type {THREE.Mesh[]}
+       */
+      var particles = [];
+
+      for (var i = 0; i < this.CANVAS_W * this.CANVAS_H / 2; i++) {
+        var geometry = new THREE.PlaneBufferGeometry(40, 40, 1, 1);
+        var material = new THREE.MeshLambertMaterial({
+          color: 0xffffff,
+          map: new THREE.TextureLoader().load(PARTICLE_IMAGE),
+          transparent: true,
+          blending: THREE.AdditiveBlending,
+          side: THREE.DoubleSide
+        });
+        var mesh = new THREE.Mesh(geometry, material);
+        particles.push(mesh);
+      }
+
+      return particles;
     };
 
     /**
