@@ -328,6 +328,7 @@
       // Word Formation Timeline
       // ------------------------------
       var particleIdx = 0;
+      var iconStartPositionZ = Math.max(20000 - (40 * this.width) / 3, 10000);
 
       for (var i = 0; i < this.CANVAS_W; i++) {
         for (var j = 0; j < (this.CANVAS_H/2); j++) {
@@ -349,7 +350,7 @@
           var iconStartPosition = {
             x: 2000 * (Math.random() - 0.5) - 500,
             y: 1000 * (Math.random() - 0.5),
-            z: 10000
+            z: iconStartPositionZ
           };
           var iconEndPosition = {
             x: (i - this.CANVAS_W / 2) * 30,
@@ -631,9 +632,15 @@
       // Wrap position start.
       this.wrap.position.z = -1000;
 
+      // Wrap position end Z coordinate.
+      var wrapEndPositionZ = Math.max(
+        Math.min((40 * this.width) / 3 - 15000, -5500),
+        -10000
+      );
+
       // Wrap position end.
       this.timeline.to(this.wrap.position, 3.0, {
-        z: -5500,
+        z: wrapEndPositionZ,
         ease: Quart.easeIn
       }, 0);
     };
@@ -649,11 +656,14 @@
         z: 11000
       }, 0);
 
+      // Camera position end Z coordinate.
+      var cameraEndPositionZ = Math.max(5000 - (16 * this.width) / 3, 1000);
+
       // Camera position end.
       this.timeline.to(this.camera.position, 8.0, {
         x: 0,
         y: 0,
-        z: 1000,
+        z: cameraEndPositionZ,
         ease: Cubic.easeOut
       }, 0);
     };
