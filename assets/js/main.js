@@ -1,4 +1,4 @@
-/* global THREE, createjs, WebFont */
+/* global THREE, createjs, WebFont, TimelineMax */
 
 'use strict';
 
@@ -27,8 +27,8 @@
   })();
 
   /**
-   * A class that displays icon particles joined together to form a word
-   *     in space.
+   * A class that displays animated 3D graphics of icon particles joining
+   *     together to form a word in space.
    * @author Marc Tambara
    */
   var IconGalaxy = (function() {
@@ -37,7 +37,7 @@
      */
     function IconGalaxy() {
       /**
-       * The word to display.
+       * The word to animate and display.
        * @const {string}
        */
       this.WORD = 'marc@tambara.me';
@@ -85,12 +85,17 @@
       this.createBackground();
       this.addLight();
       this.createSpaceParticles();
-      this.createWord();
+
+      // ------------------------------
+      // Timeline
+      // ------------------------------
+      this.createTimeline();
+      this.createWordAnimation();
 
       // ------------------------------
       // Render
       // ------------------------------
-      this.render();
+      this.animate();
     }
 
     /**
@@ -106,10 +111,17 @@
     };
 
     /**
+     * Animate function that executes on every frame.
+     */
+    IconGalaxy.prototype.animate = function() {
+      requestAnimationFrame(this.animate.bind(this));
+      this.render();
+    };
+
+    /**
      * Renders the scene.
      */
     IconGalaxy.prototype.render = function() {
-      requestAnimationFrame(this.render.bind(this));
       this.renderer.render(this.scene, this.camera);
     };
 
@@ -269,9 +281,16 @@
     };
 
     /**
-     * Generates our word from icon particles.
+     * Creates the animation timeline.
      */
-    IconGalaxy.prototype.createWord = function() {
+    IconGalaxy.prototype.createTimeline = function() {
+      this.timeline = new TimelineMax({autoRemoveChildren: true});
+    };
+
+    /**
+     * Generates our word from animated icon particles.
+     */
+    IconGalaxy.prototype.createWordAnimation = function() {
       // ------------------------------
       // Icon Particles
       // ------------------------------
@@ -287,7 +306,7 @@
       this.createIconParticles(pixelData);
 
       // ------------------------------
-      // Word Formation
+      // Word Formation Timeline
       // ------------------------------
       var particleIdx = 0;
 
