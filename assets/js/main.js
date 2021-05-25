@@ -282,9 +282,10 @@
      */
     IconGalaxy.prototype.createIconParticles = function() {
       /**
-       * @todo Swap this out for the icon particle texture.
+       * A placeholder icon texture.
+       * @type {THREE.Texture}
        */
-      var PARTICLE_IMAGE = 'assets/images/space_particle.png';
+      var texture = this.createIconTexture();
 
       /**
        * Array of icon particles.
@@ -296,7 +297,7 @@
         var geometry = new THREE.PlaneBufferGeometry(40, 40, 1, 1);
         var material = new THREE.MeshLambertMaterial({
           color: 0xffffff,
-          map: new THREE.TextureLoader().load(PARTICLE_IMAGE),
+          map: texture,
           transparent: true,
           blending: THREE.AdditiveBlending,
           side: THREE.DoubleSide
@@ -306,6 +307,38 @@
       }
 
       return particles;
+    };
+
+    /**
+     * Generates a texture for icons.
+     * @return {THREE.Texture} A texture for the icons.
+     */
+    IconGalaxy.prototype.createIconTexture = function() {
+      var SIZE = 256;
+
+      // Create a container for our text.
+      var container = new createjs.Container();
+
+      // Add the text to the container at the specified coordinates.
+      /**
+       * @todo Swap for FontAwesome icon.
+       */
+      var text = new createjs.Text('X', '200px Arial', '#FFF');
+      text.textBaseline = 'middle';
+      text.textAlign = 'center';
+      text.x = SIZE / 2;
+      text.y = SIZE / 2;
+      container.addChild(text);
+
+      // Cache the display object.
+      container.cache(0, 0, SIZE, SIZE);
+
+      // Get the image data url for the cache.
+      var cacheUrl = container.getCacheDataURL();
+
+      // Create & return the texture.
+      var texture = new THREE.TextureLoader().load(cacheUrl);
+      return texture;
     };
 
     /**
