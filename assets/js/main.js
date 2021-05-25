@@ -21,6 +21,11 @@
       this.addEventListeners();
 
       // ------------------------------
+      // Scene
+      // ------------------------------
+      this.createBackground();
+
+      // ------------------------------
       // Render
       // ------------------------------
       this.render();
@@ -96,6 +101,13 @@
       window.addEventListener('resize', function(e) {
         _this.handleResize(e);
       }, false);
+    };
+
+    /**
+     * Sets the scene's background color.
+     */
+    IconGalaxy.prototype.createBackground = function() {
+      this.scene.background = new THREE.Color(0x002256);
     };
 
     return IconGalaxy;
