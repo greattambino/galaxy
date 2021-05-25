@@ -31,6 +31,12 @@
        */
       this.CANVAS_H = 40;
 
+      /**
+       * Matrix length for icons texture atlas.
+       * @const {number}
+       */
+      this.MATRIX_LENGTH = 8;
+
       // ------------------------------
       // Setup
       // ------------------------------
@@ -305,10 +311,10 @@
      */
     IconGalaxy.prototype.createIconParticles = function() {
       /**
-       * A placeholder icon texture.
+       * A texture atlas of icons.
        * @type {THREE.Texture}
        */
-      var texture = this.createIconTexture();
+      var texture = this.createIconTextureAtlas();
 
       /**
        * Array of icon particles.
@@ -327,41 +333,50 @@
         });
         var mesh = new THREE.Mesh(geometry, material);
         particles.push(mesh);
+
+        /**
+         * @todo Update the mesh's geometry UVs to isolate a random icon from
+         *     the texture atlas.
+         */
       }
 
       return particles;
     };
 
     /**
-     * Generates a texture for icons.
-     * @return {THREE.Texture} A texture for the icons.
+     * Generates an icon texture atlas.
+     * @return {THREE.Texture} A texture atlas of icons.
      */
-    IconGalaxy.prototype.createIconTexture = function() {
+    IconGalaxy.prototype.createIconTextureAtlas = function() {
       var SIZE = 256;
+      var MATRIX_AREA = this.MATRIX_LENGTH * this.MATRIX_LENGTH;
 
-      // Create a container for our text.
+      // Create a container for our texture atlas.
       var container = new createjs.Container();
 
       // Add the text to the container at the specified coordinates.
-      /**
-       * @todo Swap for FontAwesome icon.
-       */
-      var text = new createjs.Text('X', '200px Arial', '#FFF');
-      text.textBaseline = 'middle';
-      text.textAlign = 'center';
-      text.x = SIZE / 2;
-      text.y = SIZE / 2;
-      container.addChild(text);
+      for (var i = 0; i < MATRIX_AREA; i++) {
+        /**
+         * @todo Swap for FontAwesome icon.
+         */
+        var text = new createjs.Text('X', '200px Arial', '#FFF');
+        text.textBaseline = 'middle';
+        text.textAlign = 'center';
+        text.x = SIZE * (i % this.MATRIX_LENGTH) + SIZE / 2;
+        text.y = SIZE * Math.floor(i / this.MATRIX_LENGTH) + SIZE / 2;
+        container.addChild(text);
+      }
 
       // Cache the display object.
-      container.cache(0, 0, SIZE, SIZE);
+      var atlasLength = SIZE * this.MATRIX_LENGTH;
+      container.cache(0, 0, atlasLength, atlasLength);
 
       // Get the image data url for the cache.
       var cacheUrl = container.getCacheDataURL();
 
       // Create & return the texture.
-      var texture = new THREE.TextureLoader().load(cacheUrl);
-      return texture;
+      var textureAtlas = new THREE.TextureLoader().load(cacheUrl);
+      return textureAtlas;
     };
 
     /**
