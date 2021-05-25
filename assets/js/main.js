@@ -17,6 +17,7 @@
       // Setup
       // ------------------------------
       this.setupScene();
+      this.setupCamera();
     }
 
     /**
@@ -40,6 +41,23 @@
       // Add the renderer to the dom.
       var container = document.getElementById('container');
       container.appendChild(this.renderer.domElement);
+    };
+
+    /**
+     * Creates the PerspectiveCamera and configures camera placement.
+     */
+    IconGalaxy.prototype.setupCamera = function() {
+      // Create the camera.
+      var cameraAspect = this.width / this.height;
+      this.camera = new THREE.PerspectiveCamera(45, cameraAspect, 1, 200000);
+
+      // Set the positioning.
+      this.camera.far = 100000;
+      this.camera.near = 1;
+      this.camera.position.z = 5000;
+
+      // Look towards the center.
+      this.camera.lookAt(0, 0, 0);
     };
 
     return IconGalaxy;
