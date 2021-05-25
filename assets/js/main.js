@@ -61,6 +61,12 @@
       this.MATRIX_LENGTH = 8;
 
       /**
+       * Background hue color.
+       * @const {float}
+       */
+      this.HUE = 0.6;
+
+      /**
        * Array of icon particles.
        * @type {THREE.Mesh[]}
        */
@@ -292,6 +298,14 @@
             continue;
 
           var icon = this.particles[particleIdx];
+
+          // Icon color & blending.
+          icon.material.color.setHSL(
+            this.HUE + ((i / this.CANVAS_W) - 0.5) * 0.2,
+            0.5,
+            0.6 + 0.4 * Math.random()
+          );
+          icon.material.blending = THREE.AdditiveBlending;
 
           // Icon position.
           icon.position.x = (i - this.CANVAS_W / 2) * 30;
