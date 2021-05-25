@@ -91,6 +91,7 @@
       // Timeline
       // ------------------------------
       this.createTimeline();
+      this.addFadeInEffect();
       this.createWordAnimation();
       this.setupWrapTimeline();
       this.setupCameraTimeline();
@@ -304,6 +305,17 @@
      */
     IconGalaxy.prototype.createTimeline = function() {
       this.timeline = new TimelineMax({autoRemoveChildren: true});
+    };
+
+    /**
+     * Adds a fade in effect to the timeline.
+     */
+    IconGalaxy.prototype.addFadeInEffect = function() {
+      this.timeline.to('#cover', 1.0, {
+        css: {
+          opacity: 0.0
+        }
+      }, 0);
     };
 
     /**
