@@ -1,4 +1,4 @@
-/* global THREE, createjs, WebFont, TimelineMax, Expo, Cubic, Quart */
+/* global THREE, createjs, WebFont, TimelineMax, Expo, Cubic, Quart, TweenMax */
 
 'use strict';
 
@@ -95,6 +95,7 @@
       this.createWordAnimation();
       this.setupWrapTimeline();
       this.setupCameraTimeline();
+      this.modifyTimeScale();
 
       // ------------------------------
       // Render
@@ -678,6 +679,30 @@
         z: cameraEndPositionZ,
         ease: Cubic.easeOut
       }, 0);
+    };
+
+    /**
+     * Applies a slow-motion time warp to the timeline.
+     */
+    IconGalaxy.prototype.modifyTimeScale = function() {
+      // Set the initial timeline timescale.
+      this.timeline.timeScale(1.0);
+
+      // Reduce the timeline timescale for a duration of 2 seconds after an
+      // initial delay of 5 seconds.
+      TweenMax.to(this.timeline, 2.0, {
+        timeScale: 0.05,
+        ease: Cubic.easeOut,
+        delay: 5.0
+      });
+
+      // Increase the timeline timescale for a duration of 2 seconds after an
+      // initial delay of 7 seconds.
+      TweenMax.to(this.timeline, 2.0, {
+        timeScale: 1.5,
+        ease: Cubic.easeIn,
+        delay: 7.0
+      });
     };
 
     /**
