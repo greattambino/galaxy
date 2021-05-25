@@ -91,6 +91,7 @@
       // ------------------------------
       this.createTimeline();
       this.createWordAnimation();
+      this.setupCameraTimeline();
 
       // ------------------------------
       // Render
@@ -115,7 +116,15 @@
      */
     IconGalaxy.prototype.animate = function() {
       requestAnimationFrame(this.animate.bind(this));
+      this.onTick();
       this.render();
+    };
+
+    /**
+     * Adjusts camera focal point - Executes every animation frame.
+     */
+    IconGalaxy.prototype.onTick = function() {
+      this.camera.lookAt(0, 0, 0);
     };
 
     /**
@@ -603,6 +612,26 @@
       }
 
       uvs.needsUpdate = true;
+    };
+
+    /**
+     * Applies the timeline for the camera positioning.
+     */
+    IconGalaxy.prototype.setupCameraTimeline = function() {
+      // Camera position start.
+      this.timeline.set(this.camera.position, {
+        x: 3000,
+        y: 2000,
+        z: 10000
+      }, 0);
+
+      // Camera position end.
+      this.timeline.to(this.camera.position, 8.0, {
+        x: 0,
+        y: 0,
+        z: 5000,
+        ease: Cubic.easeOut
+      }, 0);
     };
 
     /**
