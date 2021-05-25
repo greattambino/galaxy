@@ -343,12 +343,18 @@
 
           // Icon rotation.
           icon.rotation.z = 10 * Math.PI * (Math.random() - 0.5);
-
-          // Icon timeline.
+          var delay = Cubic.easeInOut.getRatio(particleIdx / 1600) *
+              3.0 + 1.5 * Math.random();
           this.timeline.to(icon.rotation, 6.0, {
             z: 0,
             ease: Cubic.easeInOut
-          }, 0);
+          }, delay);
+
+          // Icon timeline & visibility delay.
+          icon.visible = false;
+          this.timeline.set(icon, {
+            visible: true
+          }, delay);
           this.timeline.to(icon.position, 7.0, {
             bezier: [
               iconStartPosition, {
@@ -359,6 +365,7 @@
               },
               iconEndPosition
             ],
+            delay: delay,
             ease: Expo.easeInOut
           }, 0);
 
