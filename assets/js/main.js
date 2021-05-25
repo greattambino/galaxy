@@ -322,7 +322,12 @@
        */
       var particles = [];
 
+      var unitRatio = 1 / this.MATRIX_LENGTH;
       for (var i = 0; i < this.CANVAS_W * this.CANVAS_H / 2; i++) {
+        // Random number within the matrix range for X offset.
+        var offsetx = (this.MATRIX_LENGTH * Math.random()) >> 0;
+        // Random number within the matrix range for Y offset.
+        var offsety = (this.MATRIX_LENGTH * Math.random()) >> 0;
         var geometry = new THREE.PlaneBufferGeometry(40, 40, 1, 1);
         var material = new THREE.MeshLambertMaterial({
           color: 0xffffff,
@@ -334,10 +339,8 @@
         var mesh = new THREE.Mesh(geometry, material);
         particles.push(mesh);
 
-        /**
-         * @todo Update the mesh's geometry UVs to isolate a random icon from
-         *     the texture atlas.
-         */
+        // Changes the UVs to isolate a random icon from the texture atlas.
+        this.randomizeUVs(mesh.geometry, unitRatio, offsetx, offsety);
       }
 
       return particles;
@@ -377,6 +380,43 @@
       // Create & return the texture.
       var textureAtlas = new THREE.TextureLoader().load(cacheUrl);
       return textureAtlas;
+    };
+
+    /**
+     * Changes the UVs in the geometry to isolate a random icon's coordinates.
+     * @param {THREE.PlaneBufferGeometry} geometry
+     * @param {number}                    unitRatio
+     * @param {number}                    offsetx
+     * @param {number}                    offsety
+     */
+    IconGalaxy.prototype.randomizeUVs = function(
+        geometry, unitRatio, offsetx, offsety) {
+      /**
+       * Data for the UV attribute in the associated BufferGeometry.
+       * @typedef {Object} UVAttribute
+       * @property {integer}  count - The array's length divided by the itemSize.
+       * @property {function} getX - Returns the x component of the vector at
+       *     the given index.
+       * @property {function} getY - Returns the y component of the vector at
+       *     the given index.
+       * @property {function} setXY - Sets the x and y components of the vector
+       *     at the given index.
+       * @property {boolean}  needsUpdate - Flag to indicate that this attribute
+       *     has changed and should be re-sent to the GPU.
+       */
+
+      /**
+       * @type {UVAttribute}
+       */
+      var uvs = geometry.attributes.uv;
+
+      for (var i = 0; i < uvs.count; i++) {
+        var uvx = (uvs.getX(i) + offsetx) * unitRatio;
+        var uvy = (uvs.getY(i) + offsety) * unitRatio;
+        uvs.setXY(i, uvx, uvy);
+      }
+
+      uvs.needsUpdate = true;
     };
 
     /**
