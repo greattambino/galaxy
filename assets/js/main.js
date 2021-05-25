@@ -231,24 +231,47 @@
      * Generates our word from icon particles.
      */
     IconGalaxy.prototype.createWord = function() {
+      // ------------------------------
+      // Icon Particles
+      // ------------------------------
       /**
        * The pixel data for our word represented in a one-dimensional array
        *     containing the data in the RGBA order, with integer values between
        *     0 and 255 (inclusive).
        * @type {Uint8ClampedArray.<number>}
        */
-      // var pixelData = this.getWordPixelData();
+      var pixelData = this.getWordPixelData();
 
       /**
        * An array of icon particles for our word.
        * @type {THREE.Mesh[]}
        */
-      // var particles = this.createIconParticles();
+      var particles = this.createIconParticles();
 
-      /**
-       * @todo Form the word by setting the positions of the icon particles
-       *     and adding them to the scene.
-       */
+      // ------------------------------
+      // Word Formation
+      // ------------------------------
+      var particleIdx = 0;
+
+      for (var i = 0; i < this.CANVAS_W; i++) {
+        for (var j = 0; j < (this.CANVAS_H/2); j++) {
+          // Continue to next iteration if pixel is black (transparent).
+          if (pixelData[(this.CANVAS_W * j + i) * 4 + 3] == 0)
+            continue;
+
+          var icon = particles[particleIdx];
+
+          // Icon position.
+          icon.position.x = (i - this.CANVAS_W / 2) * 30;
+          icon.position.y = (this.CANVAS_H / 2 - j) * 30;
+          icon.position.z = 0;
+
+          // Add icon to the scene.
+          this.scene.add(icon);
+
+          particleIdx++;
+        }
+      }
     };
 
     /**
