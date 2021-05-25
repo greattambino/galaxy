@@ -18,12 +18,25 @@
       // ------------------------------
       this.setupScene();
       this.setupCamera();
+      this.addEventListeners();
 
       // ------------------------------
       // Render
       // ------------------------------
       this.render();
     }
+
+    /**
+     * Event handler that adjusts the camera's aspect & renderer size
+     *     when resizing the window.
+     */
+    IconGalaxy.prototype.handleResize = function() {
+      this.width = window.innerWidth;
+      this.height = window.innerHeight;
+      this.camera.aspect = this.width / this.height;
+      this.camera.updateProjectionMatrix();
+      this.renderer.setSize(this.width, this.height);
+    };
 
     /**
      * Renders the scene.
@@ -71,6 +84,18 @@
 
       // Look towards the center.
       this.camera.lookAt(0, 0, 0);
+    };
+
+    /**
+     * Adds event listeners to the DOM.
+     */
+    IconGalaxy.prototype.addEventListeners = function() {
+      var _this = this;
+
+      // Add event listener for window resizing.
+      window.addEventListener('resize', function(e) {
+        _this.handleResize(e);
+      }, false);
     };
 
     return IconGalaxy;
