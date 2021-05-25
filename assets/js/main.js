@@ -1,8 +1,31 @@
-/* global THREE, createjs */
+/* global THREE, createjs, WebFont */
 
 'use strict';
 
 (function() {
+  /**
+   * A class that preloads the necessary fonts.
+   * Once loaded, it then instantiates the IconGalaxy class.
+   */
+  var WebFontPreload = (function() {
+    WebFont.load({
+      custom: {
+        families: ['FontAwesome'],
+        urls: [
+          'https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css'
+        ],
+        testStrings: {
+          'FontAwesome': '\uf270'
+        }
+      },
+      // Instantiate the IconGalaxy class when fonts are loaded.
+      active: function() {
+        new IconGalaxy();
+      }
+    });
+    return WebFontPreload;
+  })();
+
   /**
    * A class that displays icon particles joined together to form a word
    *     in space.
@@ -357,12 +380,9 @@
       // Create a container for our texture atlas.
       var container = new createjs.Container();
 
-      // Add the text to the container at the specified coordinates.
+      // Add each icon to the container at the specified coordinates.
       for (var i = 0; i < MATRIX_AREA; i++) {
-        /**
-         * @todo Swap for FontAwesome icon.
-         */
-        var text = new createjs.Text('X', '200px Arial', '#FFF');
+        var text = new createjs.Text('\uf270', '200px FontAwesome', '#FFF');
         text.textBaseline = 'middle';
         text.textAlign = 'center';
         text.x = SIZE * (i % this.MATRIX_LENGTH) + SIZE / 2;
@@ -459,8 +479,4 @@
 
     return IconGalaxy;
   })();
-
-  window.addEventListener('load', function() {
-    new IconGalaxy();
-  });
 })();
