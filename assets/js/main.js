@@ -72,6 +72,25 @@
        */
       this.particles = [];
 
+      /**
+       * Toggle flag for camera positioning control.
+       * @type {boolean}
+       */
+      this.allowCameraControl = false;
+
+      /**
+       * Pointer's X coordinate used for camera positioning control.
+       * @type {number}
+       */
+
+      this.mouseX = 0;
+
+      /**
+       * Pointer's Y coordinate used for camera positioning control.
+       * @type {number}
+       */
+      this.mouseY = 0;
+
       // ------------------------------
       // Setup
       // ------------------------------
@@ -116,6 +135,18 @@
     };
 
     /**
+     * Pointer move handler that adjusts the camera's XY coordinates.
+     * @param {PointerEvent} event
+     */
+    IconGalaxy.prototype.handlePointerMove = function(event) {
+      if (event.isPrimary === false) return;
+      if (this.allowCameraControl === false) return;
+
+      this.mouseX = event.clientX - this.width / 2;
+      this.mouseY = event.clientY - this.height / 2;
+    };
+
+    /**
      * Animate function that executes on every frame.
      */
     IconGalaxy.prototype.animate = function() {
@@ -125,9 +156,13 @@
     };
 
     /**
-     * Adjusts camera focal point - Executes every animation frame.
+     * Adjusts camera positioning & focal point - Executes every animation frame.
      */
     IconGalaxy.prototype.onTick = function() {
+      if (this.allowCameraControl) {
+        this.camera.position.x += (this.mouseX - this.camera.position.x) * 0.05;
+        this.camera.position.y += (-this.mouseY - this.camera.position.y) * 0.05;
+      }
       this.camera.lookAt(0, 0, 0);
     };
 
@@ -188,6 +223,14 @@
       window.addEventListener('resize', function(e) {
         _this.handleResize(e);
       }, false);
+
+      // Add event listener for pointer movement.
+      document.body.style.touchAction = 'none';
+      if (this.width >= 400) {
+        document.body.addEventListener('pointermove', function(e) {
+          _this.handlePointerMove(e);
+        }, false);
+      }
     };
 
     /**
@@ -305,7 +348,13 @@
      * Creates the animation timeline.
      */
     IconGalaxy.prototype.createTimeline = function() {
-      this.timeline = new TimelineMax({autoRemoveChildren: true});
+      var _this = this;
+      this.timeline = new TimelineMax({
+        autoRemoveChildren: true,
+        onComplete: function() {
+          _this.allowCameraControl = true;
+        }
+      });
     };
 
     /**
