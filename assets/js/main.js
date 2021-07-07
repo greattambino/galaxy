@@ -46,7 +46,7 @@
        * Canvas width.
        * @const {number}
        */
-      this.CANVAS_W = 160;
+      this.CANVAS_W = 180;
 
       /**
        * Canvas height.
