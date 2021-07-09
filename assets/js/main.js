@@ -164,6 +164,27 @@
         this.camera.position.y += (-this.mouseY - this.camera.position.y) * 0.05;
       }
       this.camera.lookAt(0, 0, 0);
+      this.scaleBackground();
+    };
+
+    /**
+    * Copies the background and applies it to the other side of the camera.
+    */
+    IconGalaxy.prototype.scaleBackground = function() {
+      /**
+       * A Vector3 representing the camera's local position.
+       * @type {THREE.Vector3}
+       */
+      var vector = this.camera.position.clone();
+      // Inverts this vector.
+      vector.negate();
+      // Transforms this Vector into a Unit vector by dividing it by it's length.
+      vector.normalize();
+      // Multiplies this vector by scalar s.
+      vector.multiplyScalar(10000);
+      // Copies the Vector3 into the background's position.
+      this.background.position.copy(vector);
+      this.background.lookAt(this.camera.position);
     };
 
     /**
@@ -275,6 +296,7 @@
       // Set the background positioning.
       background.position.z = -10000;
 
+      this.background = background;
       this.scene.add(background);
     };
 
